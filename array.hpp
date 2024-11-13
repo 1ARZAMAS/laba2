@@ -15,6 +15,7 @@ struct CustomArray {
     CustomArray(int max);
     ~CustomArray();
 
+    void initialize(const std::initializer_list<T>& list);
     void add(int index, T value); // добавление
     void addToTheEnd(T value); // добавить в конец
     void get(int index); // получение по индексу
@@ -22,7 +23,7 @@ struct CustomArray {
     void replace(int index, T value); // замена
     void length(); // длина
     void display(); // вывод на экран
-
+   
     T& operator[](int index) {
         if (index < 0 || index >= size) {
             throw out_of_range("Index out of bounds");
@@ -46,6 +47,19 @@ CustomArray<T>::CustomArray(int capacity) : capacity(capacity), size(0) {
 template <typename T>
 CustomArray<T>::~CustomArray() {
     delete[] data; // освобождаем память
+}
+
+template <typename T>
+void CustomArray<T>::initialize(const std::initializer_list<T>& list) {
+    if (list.size() > capacity) {
+        cout << "Initializer list size exceeds capacity!" << endl;
+        return;
+    }
+    size = list.size();
+    int i = 0;
+    for (const T& value : list) {
+        data[i++] = value;
+    }
 }
 
 template <typename T>
