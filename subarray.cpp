@@ -35,16 +35,7 @@ int main(){
             iss >> value;
             customArray.addToTheEnd(value);
         } else if (command == "TEST"){
-            customArray.addToTheEnd(4);
-            customArray.addToTheEnd(-7);
-            customArray.addToTheEnd(1);
-            customArray.addToTheEnd(5);
-            customArray.addToTheEnd(-4);
-            customArray.addToTheEnd(0);
-            customArray.addToTheEnd(-3);
-            customArray.addToTheEnd(2);
-            customArray.addToTheEnd(4);
-            customArray.addToTheEnd(1);
+            customArray.initialize({4,-7, 1, 5, -4, 0, -3, 2, 4, 1});
         } else if (command == "subarray"){
             int targetSum = 5;
             subarray(targetSum);
