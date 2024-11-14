@@ -5,7 +5,7 @@
 
 using namespace std;
 
-HashTable hash_table = HashTable(); // создание хэш-таблицы
+HashTable hash_table = HashTable<string>(); // создание хэш-таблицы
 
 int main(){
     string command;
