@@ -23,6 +23,8 @@ struct CustomArray {
     void replace(int index, T value); // замена
     void length(); // длина
     void display(); // вывод на экран
+    void shellSort(); // сортировка шелла
+    bool isExist(T data);
    
     T& operator[](int index) {
         if (index < 0 || index >= size) {
@@ -137,4 +139,28 @@ void CustomArray<T>::get(int index) {
         return;
     }
     std::cout << "Element by index " << index << ": " << data[index] << std::endl;
+}
+
+template <typename T>
+bool CustomArray<T>::isExist(T value){
+    for(int i = 0; i < size; i++){
+        if (value == data[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
+template <typename T>
+void CustomArray<T>::shellSort(){
+    for (int interval = size / 2; interval > 0; interval /= 2){
+        for (int i = interval; i < size; i += 1){
+            T temp = data[i];
+            int j;
+            for (j = i; j >= interval && data[j - interval] < temp; j -= interval) {
+                data[j] = data[j - interval];
+            }
+            data[j] = temp;
+        }
+    }
 }
