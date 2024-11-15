@@ -7,13 +7,15 @@ using namespace std;
 
 const int SIZE = 500;
 
+template <typename T>
 struct HashTableItem {
-    std::string data; // Только значение
+    T data; // Только значение
     HashTableItem* next; // Указатель на следующий элемент
 };
 
+template <typename T>
 struct HashTable {
-    HashTableItem* items[SIZE]; // Массив указателей на элементы хеш-таблицы
+    HashTableItem<T>* items[SIZE]; // Массив указателей на элементы хеш-таблицы
     int count; // Количество элементов
 
     HashTable() : count(0) {
@@ -22,15 +24,16 @@ struct HashTable {
         }
     }
 
-    int HashFun(const std::string& data); // Хеш-функция
-    HashTableItem* createItem(const std::string& data); // Создание элемента
-    void push(const std::string& data); // Добавление элемента
-    void pop(const std::string& data); // Удаление элемента
-    void get(const std::string& data); // Проверка наличия элемента
+    int HashFun(const T& data); // Хеш-функция
+    HashTableItem<T>* createItem(const T& data); // Создание элемента
+    void push(const T& data); // Добавление элемента
+    void pop(const T& data); // Удаление элемента
+    void get(const T& data); // Проверка наличия элемента
     void clear(); // Очистка таблицы
 };
 
-int HashTable::HashFun(const std::string& data) {
+template <typename T>
+int HashTable<T>::HashFun(const T& data) {
     const int prime = 43; // Простое число для улучшения хеширования
     int hash = 0;
     for (char letter : data) {
@@ -39,19 +42,21 @@ int HashTable::HashFun(const std::string& data) {
     return hash;
 }
 
-HashTableItem* HashTable::createItem(const std::string& data) {
-    return new HashTableItem{ data, nullptr };
+template <typename T>
+HashTableItem<T>* HashTable<T>::createItem(const T& data) {
+    return new HashTableItem<T>{ data, nullptr };
 }
 
-void HashTable::push(const std::string& data) {
+template <typename T>
+void HashTable<T>::push(const T& data) {
     int index = HashFun(data); // Получаем индекс для этого значения
-    HashTableItem* item = createItem(data);
+    HashTableItem<T>* item = createItem(data);
 
     if (items[index] == nullptr) {
         items[index] = item; // Вставляем элемент в пустую ячейку
         count++;
     } else {
-        HashTableItem* current = items[index];
+        HashTableItem<T>* current = items[index];
         // Проверяем, есть ли уже такое значение
         while (current != nullptr) {
             if (current->data == data) {
@@ -68,10 +73,11 @@ void HashTable::push(const std::string& data) {
     }
 }
 
-void HashTable::pop(const std::string& data) {
+template <typename T>
+void HashTable<T>::pop(const T& data) {
     int index = HashFun(data); // Получаем индекс для этого значения
-    HashTableItem* current = items[index];
-    HashTableItem* prev = nullptr;
+    HashTableItem<T>* current = items[index];
+    HashTableItem<T>* prev = nullptr;
 
     while (current != nullptr) {
         if (current->data == data) {
@@ -91,9 +97,10 @@ void HashTable::pop(const std::string& data) {
     cout << "This value is not in the table" << endl; // Если элемент не найден
 }
 
-void HashTable::get(const std::string& data) {
+template <typename T>
+void HashTable<T>::get(const T& data) {
     int index = HashFun(data); // Получаем индекс для этого значения
-    HashTableItem* current = items[index];
+    HashTableItem<T>* current = items[index];
 
     while (current != nullptr) {
         if (current->data == data) {
@@ -106,11 +113,12 @@ void HashTable::get(const std::string& data) {
     cout << "Element " << data << " is not in the table" << endl;
 }
 
-void HashTable::clear() {
+template <typename T>
+void HashTable<T>::clear() {
     for (int i = 0; i < SIZE; ++i) {
-        HashTableItem* current = items[i];
+        HashTableItem<T>* current = items[i];
         while (current != nullptr) {
-            HashTableItem* temp = current;
+            HashTableItem<T>* temp = current;
             current = current->next;
             delete temp; // Удаление элемента
         }
