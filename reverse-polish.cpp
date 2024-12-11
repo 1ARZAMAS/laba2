@@ -130,6 +130,7 @@ int main() {
     string line;
     cin >> line;
     string result = infixToPostfix(line); // преобразование инфиксной записи в постфиксную
-    cout << RPN(result);
+    cout << result << endl;
+    cout << RPN(result) << endl;
     return 0;
 }
