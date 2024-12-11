@@ -9,7 +9,7 @@ using namespace std;
 
 // Функция для определения приоритета оператора
 int prec(char c) {
-    if (c == '/' || c == '*'){
+    if (c == '/' || c == '*') {
         return 2;
     } else if (c == '+' || c == '-') {
         return 1;
@@ -26,8 +26,9 @@ string infixToPostfix(string& line) {
     while (i < line.length()) {
         char c = line[i];
 
-        if (isdigit(c)) {// если это цифра, соберем все символы в число
-            while (i < line.length() && isdigit(line[i])) {
+        if (isdigit(c) || (c == '-' && (i == 0 || line[i - 1] == '(' || isspace(line[i - 1])))) {
+            // Если это цифра или минус в начале числа (например, "-5")
+            while (i < line.length() && (isdigit(line[i]) || line[i] == '.')) {
                 result += line[i];
                 i++;
             }
@@ -37,14 +38,14 @@ string infixToPostfix(string& line) {
             st.push(c);  // push открывающую скобку
             i++;
         }
-        else if (c == ')') { //Пока на верхушке стека не окажется открывающая скобка,
+        else if (c == ')') { // Пока на верхушке стека не окажется открывающая скобка,
             // выталкиваем операторы в результат
             while (!st.empty() && st.Top() != '(') {
                 result += st.Top();
                 st.pop();
                 result += ' ';  // разделяем операторы
             }
-            st.pop();  // убираем из стека (
+            st.pop();  // убираем из стека '('
             i++;
         }
         else {
@@ -69,15 +70,14 @@ string infixToPostfix(string& line) {
     return result;
 }
 
-
 int RPN(string line) {
     Stack<int> values;
     istringstream tokens(line);
     string token;
     
     while (tokens >> token) {
-        if (isdigit(token[0])) {
-            // Если токен — это число, добавляем его в стек
+        if (isdigit(token[0]) || (token[0] == '-' && token.length() > 1 && isdigit(token[1]))) {
+            // Если токен — это число (включая отрицательные числа)
             values.push(stoi(token));
         }
         else {
@@ -96,20 +96,20 @@ int RPN(string line) {
 
             switch (token[0]) {
                 case '+': 
-                    result = a + b; 
+                    result = b + a; 
                     break;
                 case '-': 
-                    result = a - b; 
+                    result = b - a; 
                     break;
                 case '*': 
-                    result = a * b; 
+                    result = b * a; 
                     break;
                 case '/': 
-                    if (b == 0) {
+                    if (a == 0) {
                         cout << "Error: division by zero." << endl;
                         return -1;
                     }
-                    result = a / b; 
+                    result = b / a; 
                     break;
                 default: 
                     cout << "Invalid operator: " << token[0] << endl; 
@@ -120,15 +120,19 @@ int RPN(string line) {
             values.push(result);
         }
     }
+
     StackNode<int>* current = values.top;
     if (current->next == nullptr){// в стеке должно остаться только одно число — это результат
         return values.Top();
+    } else {
+        cout << "Error: too many values in stack." << endl;
+        return -1;
     }
 }
 
 int main() {
     string line;
-    cin >> line;
+    getline(cin, line);  // Используем getline, чтобы обрабатывать выражения с пробелами
     string result = infixToPostfix(line); // преобразование инфиксной записи в постфиксную
     cout << result << endl;
     cout << RPN(result) << endl;
